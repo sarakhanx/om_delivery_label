@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Paper Format for ใบปะหน้า (Landscape) -->
+    <record id="paperformat_delivery_label" model="report.paperformat">
+        <field name="name">Delivery Label A4 Landscape</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">25</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">20</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Paper Format for แพ็คขนส่ง (Portrait) -->
+    <record id="paperformat_pack_delivery" model="report.paperformat">
+        <field name="name">Pack Delivery A4 Portrait</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">25</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">20</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- First Report - ใบปะหน้า -->
+    <record id="action_report_delivery_label" model="ir.actions.report">
+        <field name="name">Delivery Label (ใบปะหน้า)</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">om_delivery_label.report_delivery_label</field>
+        <field name="report_file">om_delivery_label.report_delivery_label</field>
+        <field name="paperformat_id" ref="paperformat_delivery_label"/>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Second Report - แพ็คขนส่ง -->
+    <record id="action_report_pack_delivery" model="ir.actions.report">
+        <field name="name">Pack Delivery (แพ็คขนส่ง)</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">om_delivery_label.report_pack_delivery</field>
+        <field name="report_file">om_delivery_label.report_pack_delivery</field>
+        <field name="paperformat_id" ref="paperformat_pack_delivery"/>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Template for ใบปะหน้า (Landscape) -->
+    <template id="report_delivery_label">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Main Content Section -->
+                        <div class="row" style="font-size: 18px;">
+                            <!-- Left Column - Product Details -->
+                            <div class="col-6">
+                                <h3>รายการสินค้า / Products</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>รายการ / Description</th>
+                                            <th>จำนวน / Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="o.move_ids_without_package" t-as="move">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="move.product_id"/>
+                                                    <t t-if="move.product_id.default_code">
+                                                        <br/>
+                                                        <span class="text-muted">[<t t-esc="move.product_id.default_code"/>]</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <span t-field="move.product_uom_qty"/>
+                                                    <span t-field="move.product_uom.name"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Right Column - Delivery Address -->
+                            <div class="col-6">
+                                <h3 style="font-size: 24px; margin-bottom: 15px;">ที่อยู่จัดส่ง / Delivery Address</h3>
+                                <div class="border p-4" style="min-height: 250px;">
+                                    <div style="font-size: 18px; line-height: 1.8;">
+                                        <strong style="font-size: 20px;">ชื่อลูกค้า / Customer: </strong>
+                                        <span t-field="o.partner_id.name" style="font-size: 20px;"/>
+                                        <br/>
+                                        <strong style="font-size: 20px;">ที่อยู่ / Address: </strong>
+                                        <div t-field="o.partner_id" 
+                                             t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}'
+                                             style="font-size: 20px; margin: 10px 0;"/>
+                                        <strong style="font-size: 20px;">เบอร์โทร / Phone: </strong>
+                                        <span t-field="o.partner_id.phone" style="font-size: 20px;"/>
+                                        <br/>
+                                        <strong style="font-size: 20px;">อีเมล / Email: </strong>
+                                        <span t-field="o.partner_id.email" style="font-size: 20px;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!--ANCHOR: Template for แพ็คขนส่ง (Portrait) -->
+    <template id="report_pack_delivery">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Document Title -->
+                        <div class="row">
+                            <div class="col-6">
+                                <h2>รายละเอียดการส่ง</h2>
+                                <h1 t-field="o.name"/>
+                            </div>
+                            <div class="col-6 text-right">
+                                <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 600, 'height': 100, 'img_style': 'width:300px;height:50px;'}"/>
+                                <p t-field="o.name" class="text-right"/>
+                            </div>
+                        </div>
+
+                        <!-- Document Information -->
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <strong>รายละเอียดเอกสารภายใน</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>
+                                            <strong>หมายเลขเอกสารจัดส่ง : </strong>
+                                            <span t-field="o.name"/>
+                                        </p>
+                                        <p>
+                                            <strong>วันที่จัดส่ง : </strong>
+                                            <span t-field="o.date_done" t-options='{"widget": "date"}'/>
+                                        </p>
+                                        <t t-if="o.sale_id">
+                                            <p>
+                                                <strong>ใบขายเลขที่ : </strong>
+                                                <span t-field="o.sale_id.name"/>
+                                            </p>
+                                            <p>
+                                                <strong>วันที่ขาย : </strong>
+                                                <span t-field="o.sale_id.date_order" t-options='{"widget": "date"}'/>
+                                            </p>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <strong>Destination Address</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <address t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True}'/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Table -->
+                        <h2 class="mt-4">Products / สินค้าภายใน</h2>
+                        <table class="table table-sm table-bordered mt-2">
+                            <thead>
+                                <tr>
+                                    <th>รูปภาพ</th>
+                                    <th>สินค้า</th>
+                                    <th class="text-center">จำนวน</th>
+                                    <th class="text-center">Lot/Serial Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.move_ids_without_package" t-as="move">
+                                    <td class="align-middle text-center">
+                                        <img t-if="move.product_id.image_128" t-att-src="image_data_uri(move.product_id.image_128)" style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="move.product_id"/>
+                                        <t t-if="move.product_id.default_code">
+                                            <br/>
+                                            <span class="text-muted">[                                                <t t-esc="move.product_id.default_code"/>
+]</span>
+                                        </t>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="move.product_uom_qty"/>
+                                        <span t-field="move.product_uom"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-if="move.move_line_ids">
+                                            <t t-foreach="move.move_line_ids" t-as="move_line">
+                                                <t t-if="move_line.lot_id or move_line.lot_name">
+                                                    <span t-esc="move_line.lot_id.name or move_line.lot_name"/>
+                                                    <t t-if="not move_line_last">
+                                                        <br/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!--ANCHOR: COD Information -->
+                        <t t-if="o.sale_id and o.sale_id.invoice_ids">
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <strong>ยอดเรียกเก็บปลายทาง (COD)</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="text-right">
+                                                <strong>ยอดเรียกเก็บ : </strong>
+                                                <span t-field="o.sale_id.invoice_ids.amount_residual_signed" t-options='{"widget": "monetary", "display_currency": o.sale_id.currency_id}'/>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!--FIXME: Signature Section -->
+                        <div class="row mt-5">
+                            <div class="col-6 text-center">
+                                <div style="border: 1px solid #000; height: 150px; display: flex; align-items: center; justify-content: center;">
+                                    <p class="m-0">ผู้ส่งสินค้า</p>
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div style="border: 1px solid #000; height: 150px; display: flex; align-items: center; justify-content: center;">
+                                    <p class="m-0">ผู้รับสินค้า</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Note -->
+                        <div class="row mt-5">
+                            <div class="col-12 text-center text-muted small">
+                                <p>Thank you for your business. If you have any questions regarding this delivery, please contact us.</p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo> 

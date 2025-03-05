@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Server Actions -->
+    <record id="action_print_delivery_label_server" model="ir.actions.server">
+        <field name="name">พิมพ์ใบปะหน้า</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.action_print_delivery_label()
+        </field>
+    </record>
+
+    <record id="action_print_pack_delivery_server" model="ir.actions.server">
+        <field name="name">พิมพ์แพ็คขนส่ง</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.action_print_pack_delivery()
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_picking_form_inherit_delivery_label" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.delivery.label</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_cancel']" position="before">
+                <button name="action_print_delivery_label" 
+                        string="ใบปะหน้า" 
+                        type="object" 
+                        class="oe_highlight"
+                        invisible="state not in ('assigned', 'done')"/>
+                <button name="action_print_pack_delivery" 
+                        string="แพ็คขนส่ง" 
+                        type="object" 
+                        class="oe_highlight"
+                        invisible="state not in ('assigned', 'done')"/>
+            </xpath>
+            <xpath expr="//group[@name='other_infos']" position="inside">
+                <group string="Print Status" name="print_status">
+                    <field name="delivery_label_printed"/>
+                    <field name="pack_delivery_printed"/>
+                    <field name="last_print_date" 
+                           invisible="not delivery_label_printed and not pack_delivery_printed"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo> 
