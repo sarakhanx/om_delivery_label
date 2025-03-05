@@ -9,6 +9,26 @@ class StockPicking(models.Model):
     pack_delivery_printed = fields.Boolean(string='Pack Delivery Printed', default=False, copy=False)
     last_print_date = fields.Datetime(string='Last Print Date', copy=False)
 
+    # Computed fields for status icons
+    delivery_label_status = fields.Boolean(
+        string='Delivery Label Status',
+        compute='_compute_print_status',
+        store=True,
+        help='Shows if delivery label has been printed'
+    )
+    pack_delivery_status = fields.Boolean(
+        string='Pack Delivery Status',
+        compute='_compute_print_status',
+        store=True,
+        help='Shows if pack delivery has been printed'
+    )
+
+    @api.depends('delivery_label_printed', 'pack_delivery_printed')
+    def _compute_print_status(self):
+        for record in self:
+            record.delivery_label_status = record.delivery_label_printed
+            record.pack_delivery_status = record.pack_delivery_printed
+
     def action_print_delivery_label(self):
         if len(self) > 1:
             # Check if any selected record has been printed before

@@ -72,6 +72,7 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
+                                            <th>รูปภาพ</th>
                                             <th>รายการ / Description</th>
                                             <th>จำนวน / Quantity</th>
                                         </tr>
@@ -79,6 +80,9 @@
                                     <tbody>
                                         <t t-foreach="o.move_ids_without_package" t-as="move">
                                             <tr>
+                                            <td class="align-middle text-center">
+                                                <img t-if="move.product_id.image_128" t-att-src="image_data_uri(move.product_id.image_128)" style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;"/>
+                                            </td>
                                                 <td>
                                                     <span t-field="move.product_id"/>
                                                     <t t-if="move.product_id.default_code">
@@ -249,23 +253,23 @@
                         <!--FIXME: Signature Section -->
                         <div class="row mt-5">
                             <div class="col-6 text-center">
-                                <div style="border: 1px solid #000; height: 150px; display: flex; align-items: center; justify-content: center;">
+                                <div style="border: 1px solid #000; height: 150px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px;">
                                     <p class="m-0">ผู้ส่งสินค้า</p>
                                 </div>
                             </div>
                             <div class="col-6 text-center">
-                                <div style="border: 1px solid #000; height: 150px; display: flex; align-items: center; justify-content: center;">
+                                <div style="border: 1px solid #000; height: 150px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px;">
                                     <p class="m-0">ผู้รับสินค้า</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Footer Note -->
+                        <!-- Footer Note
                         <div class="row mt-5">
                             <div class="col-12 text-center text-muted small">
                                 <p>Thank you for your business. If you have any questions regarding this delivery, please contact us.</p>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </t>
             </t>

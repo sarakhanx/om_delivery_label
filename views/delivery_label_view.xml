@@ -25,6 +25,19 @@ if records:
         </field>
     </record>
 
+    <!-- List View -->
+    <record id="view_picking_tree_inherit_delivery_label" model="ir.ui.view">
+        <field name="name">stock.picking.tree.inherit.delivery.label</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="delivery_label_status" string=" " widget="boolean_toggle"/>
+                <field name="pack_delivery_status" string=" " widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record>
+
     <!-- Form View -->
     <record id="view_picking_form_inherit_delivery_label" model="ir.ui.view">
         <field name="name">stock.picking.form.inherit.delivery.label</field>
