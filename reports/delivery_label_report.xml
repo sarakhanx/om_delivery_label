@@ -8,12 +8,12 @@
         <field name="page_height">0</field>
         <field name="page_width">0</field>
         <field name="orientation">Landscape</field>
-        <field name="margin_top">25</field>
+        <field name="margin_top">15</field>
         <field name="margin_bottom">3</field>
         <field name="margin_left">3</field>
         <field name="margin_right">3</field>
         <field name="header_line" eval="False"/>
-        <field name="header_spacing">20</field>
+        <field name="header_spacing">30</field>
         <field name="dpi">90</field>
     </record>
 
@@ -25,7 +25,7 @@
         <field name="page_height">0</field>
         <field name="page_width">0</field>
         <field name="orientation">Portrait</field>
-        <field name="margin_top">25</field>
+        <field name="margin_top">20</field>
         <field name="margin_bottom">3</field>
         <field name="margin_left">3</field>
         <field name="margin_right">3</field>
@@ -58,7 +58,7 @@
         <field name="binding_type">report</field>
     </record>
 
-    <!-- Template for ใบปะหน้า (Landscape) -->
+    <!-- ANCHOR: Template for ใบปะหน้า (Landscape) -->
     <template id="report_delivery_label">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
@@ -68,32 +68,31 @@
                         <div class="row" style="font-size: 18px;">
                             <!-- Left Column - Product Details -->
                             <div class="col-6">
-                                <h3>รายการสินค้า / Products</h3>
-                                <table class="table table-bordered">
+                                <h3>รายการสินค้า</h3>
+                                <table class="table table-bordered" style="background-color: white;">
                                     <thead>
-                                        <tr>
-                                            <th>รูปภาพ</th>
-                                            <th>รายการ / Description</th>
-                                            <th>จำนวน / Quantity</th>
+                                        <tr style="background-color: white;">
+                                            <th style="background-color: white;">รูปภาพ</th>
+                                            <th style="background-color: white;">รายการ</th>
+                                            <th style="background-color: white;">จำนวน</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <t t-foreach="o.move_ids_without_package" t-as="move">
-                                            <tr>
-                                                <td class="align-middle text-center">
+                                            <tr style="background-color: white;">
+                                                <td class="align-middle text-center" style="background-color: white;">
                                                     <img t-if="move.product_id.image_128" t-att-src="image_data_uri(move.product_id.image_128)" style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;"/>
                                                 </td>
-                                                <td>
-                                                    <span t-field="move.product_id"/>
+                                                <td style="background-color: white; color: #000;">
+                                                    <span t-field="move.product_id" style="color: #000;"/>
                                                     <t t-if="move.product_id.default_code">
                                                         <br/>
-                                                        <span class="text-muted">[                                                            <t t-esc="move.product_id.default_code"/>
-]</span>
+                                                        <span class="text-muted" style="color: #666;">[<t t-esc="move.product_id.default_code"/>]</span>
                                                     </t>
                                                 </td>
-                                                <td>
-                                                    <span t-field="move.product_uom_qty"/>
-                                                    <span t-field="move.product_uom.name"/>
+                                                <td style="background-color: white; color: #000;">
+                                                    <span t-field="move.product_uom_qty" style="color: #000;"/>
+                                                    <span t-field="move.product_uom.name" style="color: #000;"/>
                                                 </td>
                                             </tr>
                                         </t>
@@ -103,7 +102,7 @@
 
                             <!-- Right Column - Delivery Address -->
                             <div class="col-6">
-                                <h3 style="font-size: 24px; margin-bottom: 15px;">ที่อยู่จัดส่ง / Delivery Address</h3>
+                                <h3 style="font-size: 32px; margin-bottom: 15px;">ที่อยู่ผู้รับ</h3>
                                 <div class="border p-4" style="min-height: 250px;">
                                     <div style="font-size: 18px; line-height: 1.8;">
                                         <strong style="font-size: 20px;">ชื่อลูกค้า / Customer: </strong>
@@ -116,6 +115,21 @@
                                         <br/>
                                         <strong style="font-size: 20px;">อีเมล / Email: </strong>
                                         <span t-field="o.partner_id.email" style="font-size: 20px;"/>
+                                    </div>
+
+                                    <!-- Barcodes Section -->
+                                    <div class="mt-4">
+                                        <!-- Delivery Number Barcode -->
+                                        <div class="text-center mb-3">
+                                            <strong style="font-size: 16px;">เลขที่ใบส่งของ / Delivery No.: <span t-field="o.name"/></strong>
+                                            <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
+                                        </div>
+                                        
+                                        <!-- Sale Order Reference Barcode -->
+                                        <div class="text-center" t-if="o.sale_id">
+                                            <strong style="font-size: 16px;">เลขที่ใบสั่งขาย / Sale Order: <span t-field="o.sale_id.name"/></strong>
+                                            <div t-field="o.sale_id.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -138,9 +152,9 @@
                                 <h2>รายละเอียดการส่ง</h2>
                                 <h1 t-field="o.name"/>
                             </div>
-                            <div class="col-6 text-right">
+                            <div class="col-6 text-center">
                                 <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 600, 'height': 100, 'img_style': 'width:300px;height:50px;'}"/>
-                                <p t-field="o.name" class="text-right"/>
+                                <p t-field="o.name" class="text-center"/>
                             </div>
                         </div>
 
@@ -206,8 +220,7 @@
                                         <span t-field="move.product_id"/>
                                         <t t-if="move.product_id.default_code">
                                             <br/>
-                                            <span class="text-muted">[                                                <t t-esc="move.product_id.default_code"/>
-]</span>
+                                            <span class="text-muted">[<t t-esc="move.product_id.default_code"/>]</span>
                                         </t>
                                     </td>
                                     <td class="text-center">
@@ -219,6 +232,8 @@
                                             <t t-foreach="move.move_line_ids" t-as="move_line">
                                                 <t t-if="move_line.lot_id or move_line.lot_name">
                                                     <span t-esc="move_line.lot_id.name or move_line.lot_name"/>
+                                                    <!-- FIXME: Barcode -->
+                                                    <div class="o_barcode" t-att-data-barcode="move_line.lot_id.name or move_line.lot_name" style="width: 200px; height: 40px; margin-top: 5px;"/>
                                                     <t t-if="not move_line_last">
                                                         <br/>
                                                     </t>
@@ -226,12 +241,13 @@
                                             </t>
                                         </t>
                                     </td>
+
                                 </tr>
                             </tbody>
                         </table>
 
-                        <!--ANCHOR: COD Information -->
-                        <t t-if="o.sale_id and o.sale_id.invoice_ids">
+                        <!--EXPLAIN: COD Information -->
+                        <t t-if="o.sale_id and o.sale_id.invoice_ids and abs(o.sale_id.invoice_ids.amount_residual_signed) &gt; 0.009">
                             <div class="row mt-4">
                                 <div class="col-12">
                                     <div class="card">
@@ -249,7 +265,7 @@
                             </div>
                         </t>
 
-                        <!--FIXME: Signature Section -->
+                        <!-- Signature Section -->
                         <div class="row mt-5">
                             <div class="col-6 text-center">
                                 <div style="border: 1px solid #000; height: 150px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -263,13 +279,14 @@
                             </div>
                         </div>
 
-
-                        <!-- Footer Note
+                        <!-- Footer with Sale Order Note -->
                         <div class="row mt-5">
                             <div class="col-12 text-center text-muted small">
-                                <p>Thank you for your business. If you have any questions regarding this delivery, please contact us.</p>
+                                <t t-if="o.sale_id and o.sale_id.note">
+                                    <div t-field="o.sale_id.note"/>
+                                </t>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                 </t>
             </t>
