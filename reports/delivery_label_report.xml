@@ -105,30 +105,32 @@
                                 <h3 style="font-size: 32px; margin-bottom: 15px;">ที่อยู่ผู้รับ</h3>
                                 <div class="border p-4" style="min-height: 250px;">
                                     <div style="font-size: 18px; line-height: 1.8;">
-                                        <strong style="font-size: 20px;">ชื่อลูกค้า / Customer: </strong>
+                                        <strong style="font-size: 20px;">ชื่อลูกค้า : </strong>
                                         <span t-field="o.partner_id.name" style="font-size: 20px;"/>
                                         <br/>
-                                        <strong style="font-size: 20px;">ที่อยู่ / Address: </strong>
+                                        <strong style="font-size: 20px;">ที่อยู่ : </strong>
                                         <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}' style="font-size: 20px; margin: 10px 0;"/>
-                                        <strong style="font-size: 20px;">เบอร์โทร / Phone: </strong>
+                                        <strong style="font-size: 20px;">เบอร์โทร : </strong>
                                         <span t-field="o.partner_id.phone" style="font-size: 20px;"/>
                                         <br/>
-                                        <strong style="font-size: 20px;">อีเมล / Email: </strong>
-                                        <span t-field="o.partner_id.email" style="font-size: 20px;"/>
                                     </div>
 
-                                    <!-- Barcodes Section -->
+                                    <!--EXPLAIN: Barcodes Section -->
                                     <div class="mt-4">
                                         <!-- Delivery Number Barcode -->
                                         <div class="text-center mb-3">
-                                            <strong style="font-size: 16px;">เลขที่ใบส่งของ / Delivery No.: <span t-field="o.name"/></strong>
                                             <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
+                                            <strong style="font-size: 16px;">เลขที่ใบส่งของ : <span t-field="o.name"/></strong>
+                                            <br/>
+                                            <strong style="font-size: 16px;">ขนส่ง : <span t-field="o.location_id.display_name"/></strong>
                                         </div>
                                         
                                         <!-- Sale Order Reference Barcode -->
                                         <div class="text-center" t-if="o.sale_id">
-                                            <strong style="font-size: 16px;">เลขที่ใบสั่งขาย / Sale Order: <span t-field="o.sale_id.name"/></strong>
                                             <div t-field="o.sale_id.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
+                                            <strong style="font-size: 16px;">เลขที่ใบขาย : <span t-field="o.sale_id.name"/></strong>
+                                            <br/>
+                                            <strong style="font-size: 16px;">ผู้ขาย : <span t-field="o.sale_id.user_id.name"/></strong>
                                         </div>
                                     </div>
                                 </div>
