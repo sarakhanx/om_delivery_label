@@ -122,7 +122,7 @@
                                             <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
                                             <strong style="font-size: 16px;">เลขที่ใบส่งของ : <span t-field="o.name"/></strong>
                                             <br/>
-                                            <strong style="font-size: 16px;">ขนส่ง : <span t-field="o.location_id.display_name"/></strong>
+                                            <strong style="font-size: 16px;">ขนส่ง : <span t-field="o.picking_type_id.name"/></strong>
                                         </div>
                                         
                                         <!-- Sale Order Reference Barcode -->
@@ -153,6 +153,7 @@
                             <div class="col-6">
                                 <h2>รายละเอียดการส่ง</h2>
                                 <h1 t-field="o.name"/>
+                                <h5 t-field="o.picking_type_id.name"/>
                             </div>
                             <div class="col-6 text-center">
                                 <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 600, 'height': 100, 'img_style': 'width:300px;height:50px;'}"/>

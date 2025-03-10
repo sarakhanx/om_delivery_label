@@ -5,6 +5,26 @@ from datetime import datetime
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    picking_type_id = fields.Many2one(
+        'stock.picking.type',
+        string='Operation Type',
+        required=True,
+        readonly=False,
+        index=True
+    )
+    hide_picking_type = fields.Boolean(
+        string='Hide Picking Type',
+        compute='_compute_hide_picking_type',
+        store=True
+    )
+
+    @api.depends('state')
+    def _compute_hide_picking_type(self):
+        for record in self:
+            # Logic to determine if picking type should be hidden
+            # For now, we'll keep it always visible
+            record.hide_picking_type = False
+
     delivery_label_printed = fields.Boolean(string='Delivery Label Printed', default=False, copy=False)
     pack_delivery_printed = fields.Boolean(string='Pack Delivery Printed', default=False, copy=False)
     last_print_date = fields.Datetime(string='Last Print Date', copy=False)

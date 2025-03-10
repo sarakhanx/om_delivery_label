@@ -56,13 +56,27 @@ if records:
                         class="oe_highlight"
                         invisible="state not in ('assigned', 'done')"/>
             </xpath>
-            <xpath expr="//group[@name='other_infos']" position="inside">
-                <group string="Print Status" name="print_status">
-                    <field name="delivery_label_printed"/>
-                    <field name="pack_delivery_printed"/>
-                    <field name="last_print_date" 
-                           invisible="not delivery_label_printed and not pack_delivery_printed"/>
+            <xpath expr="//sheet//group" position="inside">
+                <group string="Operation" name="operation_info">
+                    <field name="picking_type_id" 
+                           options="{'no_create': True, 'no_open': True}"
+                           readonly="state != 'draft'"
+                           domain="context.get('restricted_picking_type_code') and [('code', '=', context.get('restricted_picking_type_code'))] or [(1,'=',1)]"
+                           context="{}"
+                           required="1"/>
                 </group>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Print Information" name="print_info">
+                    <group>
+                        <group string="Print Status" name="print_status">
+                            <field name="delivery_label_printed"/>
+                            <field name="pack_delivery_printed"/>
+                            <field name="last_print_date" 
+                                   invisible="not delivery_label_printed and not pack_delivery_printed"/>
+                        </group>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>
