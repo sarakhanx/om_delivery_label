@@ -130,7 +130,7 @@
                                             <div t-field="o.sale_id.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
                                             <strong style="font-size: 16px;">เลขที่ใบขาย : <span t-field="o.sale_id.name"/></strong>
                                             <br/>
-                                            <strong style="font-size: 16px;">ผู้ขาย : <span t-field="o.sale_id.user_id.name"/></strong>
+                                            <strong style="font-size: 16px;">ผู้ขาย : <span t-field="o.sale_id.user_id.name"/> (<span t-field="o.sale_id.user_id.work_phone"/>)</strong>
                                         </div>
                                     </div>
                                 </div>
@@ -187,6 +187,10 @@
                                                 <p>
                                                     <strong>วันที่ขาย : </strong>
                                                     <span t-field="o.sale_id.date_order" t-options='{"widget": "date"}'/>
+                                                </p>
+                                                <p>
+                                                    <strong>ผู้ขาย : </strong>
+                                                    <span t-field="o.sale_id.user_id.name"/> (<span t-field="o.sale_id.user_id.work_phone"/>)
                                                 </p>
                                             </t>
                                         </div>
