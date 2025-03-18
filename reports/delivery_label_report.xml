@@ -211,56 +211,70 @@
                         </div>
 
                         <!-- Product Table -->
-                        <div class="product-section">
+                        <t t-set="moves" t-value="o.move_ids_without_package"/>
+                        
+                        <!-- Products section -->
+                        <div style="page-break-inside: avoid;">
                             <h2 class="mb-3">Products / สินค้าภายใน</h2>
-                            <table class="table table-sm table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>รูปภาพ</th>
-                                        <th>สินค้า</th>
-                                        <th class="text-center">จำนวน</th>
-                                        <th class="text-center">Lot/Serial Number</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="o.move_ids_without_package" t-as="move">
-                                        <td class="align-middle text-center">
-                                            <img t-if="move.product_id.image_128" t-att-src="image_data_uri(move.product_id.image_128)" style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;"/>
-                                        </td>
-                                        <td>
-                                            <span t-field="move.product_id"/>
-                                            <t t-if="move.product_id.default_code">
-                                                <br/>
-                                                <span class="text-muted">[<t t-esc="move.product_id.default_code"/>]</span>
-                                            </t>
-                                        </td>
-                                        <td class="text-center">
-                                            <span t-field="move.product_uom_qty"/>
-                                            <span t-field="move.product_uom"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <t t-if="move.move_line_ids">
-                                                <t t-foreach="move.move_line_ids" t-as="move_line">
-                                                    <t t-if="move_line.lot_id or move_line.lot_name">
-                                                        <span t-esc="move_line.lot_id.name or move_line.lot_name"/>
-                                                        <div class="o_barcode" t-att-data-barcode="move_line.lot_id.name or move_line.lot_name" style="width: 200px; height: 40px; margin-top: 5px;"/>
-                                                        <t t-if="not move_line_last">
-                                                            <br/>
+                            
+                            <!-- Group items in batches of 4 -->
+                            <t t-foreach="range(0, len(moves), 4)" t-as="batch_start">
+                                <table class="table table-sm table-bordered" style="page-break-inside: avoid; margin-bottom: 0;">
+                                    <thead>
+                                        <tr>
+                                            <th>รูปภาพ</th>
+                                            <th>สินค้า</th>
+                                            <th class="text-center">จำนวน</th>
+                                            <th class="text-center">Lot/Serial Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="moves[batch_start:min(batch_start + 4, len(moves))]" t-as="batch">
+                                            <tr style="page-break-inside: avoid;">
+                                                <td class="align-middle text-center" style="page-break-inside: avoid;">
+                                                    <img t-if="batch.product_id.image_128" t-att-src="image_data_uri(batch.product_id.image_128)" style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;"/>
+                                                </td>
+                                                <td style="page-break-inside: avoid;">
+                                                    <span t-field="batch.product_id"/>
+                                                    <t t-if="batch.product_id.default_code">
+                                                        <br/>
+                                                        <span class="text-muted">[<t t-esc="batch.product_id.default_code"/>]</span>
+                                                    </t>
+                                                </td>
+                                                <td class="text-center" style="page-break-inside: avoid;">
+                                                    <span t-field="batch.product_uom_qty"/>
+                                                    <span t-field="batch.product_uom"/>
+                                                </td>
+                                                <td class="text-center" style="page-break-inside: avoid;">
+                                                    <t t-if="batch.move_line_ids">
+                                                        <t t-foreach="batch.move_line_ids" t-as="move_line">
+                                                            <t t-if="move_line.lot_id or move_line.lot_name">
+                                                                <span t-esc="move_line.lot_id.name or move_line.lot_name"/>
+                                                                <div class="o_barcode" t-att-data-barcode="move_line.lot_id.name or move_line.lot_name" style="width: 200px; height: 40px; margin-top: 5px;"/>
+                                                                <t t-if="not move_line_last">
+                                                                    <br/>
+                                                                </t>
+                                                            </t>
                                                         </t>
                                                     </t>
-                                                </t>
-                                            </t>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Add page break after each table except the last one -->
+                                <t t-if="batch_start + 4 &lt; len(moves)">
+                                    <p style="page-break-before: always;"><span style="display: none;"> </span></p>
+                                </t>
+                            </t>
                         </div>
 
                         <!--EXPLAIN: COD Information -->
                         <t t-if="o.sale_id and o.sale_id.invoice_ids and abs(o.sale_id.invoice_ids.amount_residual_signed) &gt; 0.009">
-                            <div class="row mt-4">
+                            <div class="row mt-4" style="page-break-inside: avoid;">
                                 <div class="col-12">
-                                    <div class="card">
+                                    <div class="card" style="page-break-inside: avoid;">
                                         <div class="card-header">
                                             <strong>ยอดเรียกเก็บปลายทาง (COD)</strong>
                                         </div>
@@ -275,8 +289,8 @@
                             </div>
                         </t>
 
-                        <!-- Signature Section -->
-                        <div class="row mt-5">
+                        <!-- Signature Section with page break control -->
+                        <div class="row mt-5" style="page-break-inside: avoid;">
                             <div class="col-6 text-center">
                                 <div style="border: 1px solid #000; height: 150px; display: flex; align-items: center; justify-content: center; position: relative;">
                                     <p style="position: absolute; bottom: 10px; margin: 0; text-align: center; width: 100%;">ผู้ส่งสินค้า</p>
@@ -306,6 +320,18 @@
     <!-- Add CSS for header control -->
     <template id="report_pack_delivery_style">
         <style>
+            /* Direct CSS for product section and COD section */
+            .product-section, .cod-section {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .cod-section {
+                display: block;
+                position: relative;
+                width: 100%;
+            }
+
             @media print {
                 /* Reset all margins and paddings */
                 * {
@@ -313,75 +339,97 @@
                     padding: 0;
                 }
 
+                /* Global page settings */
+                .page {
+                    page-break-after: always !important;
+                    margin-top: 30mm !important;
+                }
+
                 /* First page specific styles */
                 .first-page {
-                    page-break-after: always;
-                    padding: 20px;
+                    margin-bottom: 20px;
                 }
 
                 /* Product section styles */
                 .product-section {
-                    padding: 20px;
-                    page-break-inside: avoid;
+                    page-break-before: auto !important;
+                    page-break-after: auto !important;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
+                }
+
+                /* COD section styles */
+                .cod-section {
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
+                    display: block;
+                    position: relative;
+                    width: 100%;
                 }
 
                 /* Table styles */
                 table {
-                    page-break-inside: avoid;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
                 }
 
                 tr {
-                    page-break-inside: avoid;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
                 }
 
                 td {
-                    page-break-inside: avoid;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
                 }
 
                 /* Image styles */
                 img {
-                    page-break-inside: avoid;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
                 }
 
                 /* Card styles */
                 .card {
-                    page-break-inside: avoid;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
                 }
 
                 /* Signature section */
                 .row.mt-5 {
-                    page-break-inside: avoid;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
                 }
 
-                /* Hide header on all pages except first */
-                .page:not(:first-child) .header,
-                .page:not(:first-child) .o_report_layout_standard > tbody > tr > td:first-child {
+                /* Header control for subsequent pages */
+                .header-img {
                     display: none !important;
                 }
 
-                /* Remove default margins from subsequent pages */
-                .page:not(:first-child) {
-                    margin-top: 0 !important;
-                    padding-top: 0 !important;
-                }
-
-                /* Ensure proper page breaks */
-                .page-break-inside-avoid {
-                    page-break-inside: avoid;
-                }
-
-                /* Additional header hiding rules */
-                .page:not(:first-child) .o_report_layout_standard {
-                    margin-top: 0 !important;
-                }
-
-                .page:not(:first-child) .o_report_layout_standard > tbody > tr > td {
-                    padding-top: 0 !important;
-                }
-
-                /* Force header removal */
-                .page:not(:first-child) .o_report_layout_standard > tbody > tr:first-child {
+                .o_report_layout_standard > tbody > tr:first-child {
                     display: none !important;
+                }
+
+                /* Ensure proper spacing between pages */
+                @page {
+                    margin-top: 30mm !important;
+                    margin-bottom: 20mm !important;
+                }
+
+                /* Force new page for product section if it doesn't fit */
+                .product-section:not(:first-child) {
+                    page-break-before: always !important;
+                }
+
+                /* Prevent content overlap with header */
+                .o_report_layout_standard {
+                    margin-top: 30mm !important;
+                }
+
+                /* Additional page break controls */
+                .page-break {
+                    display: block;
+                    page-break-before: always !important;
                 }
             }
         </style>
