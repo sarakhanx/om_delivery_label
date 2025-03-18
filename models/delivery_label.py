@@ -43,6 +43,28 @@ class StockPicking(models.Model):
         help='Shows if pack delivery has been printed'
     )
 
+    # Computed field for amount residual
+    amount_residual_display = fields.Monetary(
+        string='Amount Residual',
+        compute='_compute_amount_residual',
+        store=True,
+        help='Shows the remaining amount to be paid'
+    )
+    currency_id = fields.Many2one(
+        'res.currency',
+        string='Currency',
+        related='company_id.currency_id',
+        readonly=True
+    )
+
+    @api.depends('sale_id.invoice_ids.amount_residual_signed')
+    def _compute_amount_residual(self):
+        for record in self:
+            if record.sale_id and record.sale_id.invoice_ids:
+                record.amount_residual_display = record.sale_id.invoice_ids.amount_residual_signed
+            else:
+                record.amount_residual_display = 0.0
+
     @api.depends('delivery_label_printed', 'pack_delivery_printed')
     def _compute_print_status(self):
         for record in self:

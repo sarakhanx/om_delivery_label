@@ -34,6 +34,8 @@ if records:
             <field name="name" position="after">
                 <field name="delivery_label_status" string=" " widget="boolean_toggle"/>
                 <field name="pack_delivery_status" string=" " widget="boolean_toggle"/>
+                <field name="sale_id" invisible="1"/>
+                <field name="amount_residual_display" string="ยอดค้างชำระ" widget="monetary" invisible="not sale_id"/>
             </field>
         </field>
     </record>
