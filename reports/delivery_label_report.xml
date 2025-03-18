@@ -148,106 +148,109 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <!-- Document Title -->
-                        <div class="row">
-                            <div class="col-6">
-                                <h2>รายละเอียดการส่ง</h2>
-                                <h1 t-field="o.name"/>
-                                <h5 t-field="o.picking_type_id.name"/>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 600, 'height': 100, 'img_style': 'width:300px;height:50px;'}"/>
-                                <p t-field="o.name" class="text-center"/>
-                            </div>
-                        </div>
-
-                        <!-- Document Information -->
-                        <div class="row mt-4">
-                            <div class="col-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <strong>รายละเอียดเอกสารภายใน</strong>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>
-                                            <strong>หมายเลขเอกสารจัดส่ง : </strong>
-                                            <span t-field="o.name"/>
-                                        </p>
-                                        <p>
-                                            <strong>วันที่จัดส่ง : </strong>
-                                            <span t-field="o.date_done" t-options='{"widget": "date"}'/>
-                                        </p>
-                                        <t t-if="o.sale_id">
-                                            <p>
-                                                <strong>ใบขายเลขที่ : </strong>
-                                                <span t-field="o.sale_id.name"/>
-                                            </p>
-                                            <p>
-                                                <strong>วันที่ขาย : </strong>
-                                                <span t-field="o.sale_id.date_order" t-options='{"widget": "date"}'/>
-                                            </p>
-                                        </t>
-                                    </div>
+                        <!-- First Page Content -->
+                        <div class="first-page">
+                            <!-- Document Title -->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <h2>รายละเอียดการส่ง</h2>
+                                    <h1 t-field="o.name"/>
+                                    <h5 t-field="o.picking_type_id.name"/>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 600, 'height': 100, 'img_style': 'width:300px;height:50px;'}"/>
+                                    <p t-field="o.name" class="text-center"/>
                                 </div>
                             </div>
 
-                            <div class="col-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <strong>Destination Address</strong>
+                            <!-- Document Information -->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <strong>รายละเอียดเอกสารภายใน</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <p>
+                                                <strong>หมายเลขเอกสารจัดส่ง : </strong>
+                                                <span t-field="o.name"/>
+                                            </p>
+                                            <p>
+                                                <strong>วันที่จัดส่ง : </strong>
+                                                <span t-field="o.date_done" t-options='{"widget": "date"}'/>
+                                            </p>
+                                            <t t-if="o.sale_id">
+                                                <p>
+                                                    <strong>ใบขายเลขที่ : </strong>
+                                                    <span t-field="o.sale_id.name"/>
+                                                </p>
+                                                <p>
+                                                    <strong>วันที่ขาย : </strong>
+                                                    <span t-field="o.sale_id.date_order" t-options='{"widget": "date"}'/>
+                                                </p>
+                                            </t>
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        <address t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True}'/>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <strong>Destination Address</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <address t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True}'/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Product Table -->
-                        <h2 class="mt-4">Products / สินค้าภายใน</h2>
-                        <table class="table table-sm table-bordered mt-2">
-                            <thead>
-                                <tr>
-                                    <th>รูปภาพ</th>
-                                    <th>สินค้า</th>
-                                    <th class="text-center">จำนวน</th>
-                                    <th class="text-center">Lot/Serial Number</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="o.move_ids_without_package" t-as="move">
-                                    <td class="align-middle text-center">
-                                        <img t-if="move.product_id.image_128" t-att-src="image_data_uri(move.product_id.image_128)" style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="move.product_id"/>
-                                        <t t-if="move.product_id.default_code">
-                                            <br/>
-                                            <span class="text-muted">[<t t-esc="move.product_id.default_code"/>]</span>
-                                        </t>
-                                    </td>
-                                    <td class="text-center">
-                                        <span t-field="move.product_uom_qty"/>
-                                        <span t-field="move.product_uom"/>
-                                    </td>
-                                    <td class="text-center">
-                                        <t t-if="move.move_line_ids">
-                                            <t t-foreach="move.move_line_ids" t-as="move_line">
-                                                <t t-if="move_line.lot_id or move_line.lot_name">
-                                                    <span t-esc="move_line.lot_id.name or move_line.lot_name"/>
-                                                    <!-- FIXME: Barcode -->
-                                                    <div class="o_barcode" t-att-data-barcode="move_line.lot_id.name or move_line.lot_name" style="width: 200px; height: 40px; margin-top: 5px;"/>
-                                                    <t t-if="not move_line_last">
-                                                        <br/>
+                        <div class="product-section">
+                            <h2 class="mb-3">Products / สินค้าภายใน</h2>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>รูปภาพ</th>
+                                        <th>สินค้า</th>
+                                        <th class="text-center">จำนวน</th>
+                                        <th class="text-center">Lot/Serial Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.move_ids_without_package" t-as="move">
+                                        <td class="align-middle text-center">
+                                            <img t-if="move.product_id.image_128" t-att-src="image_data_uri(move.product_id.image_128)" style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="move.product_id"/>
+                                            <t t-if="move.product_id.default_code">
+                                                <br/>
+                                                <span class="text-muted">[<t t-esc="move.product_id.default_code"/>]</span>
+                                            </t>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="move.product_uom_qty"/>
+                                            <span t-field="move.product_uom"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <t t-if="move.move_line_ids">
+                                                <t t-foreach="move.move_line_ids" t-as="move_line">
+                                                    <t t-if="move_line.lot_id or move_line.lot_name">
+                                                        <span t-esc="move_line.lot_id.name or move_line.lot_name"/>
+                                                        <div class="o_barcode" t-att-data-barcode="move_line.lot_id.name or move_line.lot_name" style="width: 200px; height: 40px; margin-top: 5px;"/>
+                                                        <t t-if="not move_line_last">
+                                                            <br/>
+                                                        </t>
                                                     </t>
                                                 </t>
                                             </t>
-                                        </t>
-                                    </td>
-
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
                         <!--EXPLAIN: COD Information -->
                         <t t-if="o.sale_id and o.sale_id.invoice_ids and abs(o.sale_id.invoice_ids.amount_residual_signed) &gt; 0.009">
@@ -294,5 +297,89 @@
                 </t>
             </t>
         </t>
+    </template>
+
+    <!-- Add CSS for header control -->
+    <template id="report_pack_delivery_style">
+        <style>
+            @media print {
+                /* Reset all margins and paddings */
+                * {
+                    margin: 0;
+                    padding: 0;
+                }
+
+                /* First page specific styles */
+                .first-page {
+                    page-break-after: always;
+                    padding: 20px;
+                }
+
+                /* Product section styles */
+                .product-section {
+                    padding: 20px;
+                    page-break-inside: avoid;
+                }
+
+                /* Table styles */
+                table {
+                    page-break-inside: avoid;
+                }
+
+                tr {
+                    page-break-inside: avoid;
+                }
+
+                td {
+                    page-break-inside: avoid;
+                }
+
+                /* Image styles */
+                img {
+                    page-break-inside: avoid;
+                }
+
+                /* Card styles */
+                .card {
+                    page-break-inside: avoid;
+                }
+
+                /* Signature section */
+                .row.mt-5 {
+                    page-break-inside: avoid;
+                }
+
+                /* Hide header on all pages except first */
+                .page:not(:first-child) .header,
+                .page:not(:first-child) .o_report_layout_standard > tbody > tr > td:first-child {
+                    display: none !important;
+                }
+
+                /* Remove default margins from subsequent pages */
+                .page:not(:first-child) {
+                    margin-top: 0 !important;
+                    padding-top: 0 !important;
+                }
+
+                /* Ensure proper page breaks */
+                .page-break-inside-avoid {
+                    page-break-inside: avoid;
+                }
+
+                /* Additional header hiding rules */
+                .page:not(:first-child) .o_report_layout_standard {
+                    margin-top: 0 !important;
+                }
+
+                .page:not(:first-child) .o_report_layout_standard > tbody > tr > td {
+                    padding-top: 0 !important;
+                }
+
+                /* Force header removal */
+                .page:not(:first-child) .o_report_layout_standard > tbody > tr:first-child {
+                    display: none !important;
+                }
+            }
+        </style>
     </template>
 </odoo> 
