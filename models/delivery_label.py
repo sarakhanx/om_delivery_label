@@ -61,7 +61,8 @@ class StockPicking(models.Model):
     def _compute_amount_residual(self):
         for record in self:
             if record.sale_id and record.sale_id.invoice_ids:
-                record.amount_residual_display = record.sale_id.invoice_ids.amount_residual_signed
+                # Sum all residual amounts from related invoices
+                record.amount_residual_display = sum(record.sale_id.invoice_ids.mapped('amount_residual_signed'))
             else:
                 record.amount_residual_display = 0.0
 
