@@ -62,81 +62,87 @@
     <template id="report_delivery_label">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <!-- Main Content Section -->
-                        <div class="row" style="font-size: 18px;">
-                            <!-- Left Column - Product Details -->
-                            <div class="col-6">
-                                <h3>รายการสินค้า</h3>
-                                <table class="table table-bordered" style="background-color: white;">
-                                    <thead>
-                                        <tr style="background-color: white;">
-                                            <th style="background-color: white;">รูปภาพ</th>
-                                            <th style="background-color: white;">รายการ</th>
-                                            <th style="background-color: white;">จำนวน</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <t t-foreach="o.move_ids_without_package" t-as="move">
-                                            <tr style="background-color: white;">
-                                                <td class="align-middle text-center" style="background-color: white;">
-                                                    <img t-if="move.product_id.image_128" t-att-src="image_data_uri(move.product_id.image_128)" style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;"/>
-                                                </td>
-                                                <td style="background-color: white; color: #000;">
-                                                    <span t-field="move.product_id" style="color: #000;"/>
-                                                    <t t-if="move.product_id.default_code">
+                <!-- Create a list of move lines with their quantities -->
+                <t t-foreach="o.move_ids_without_package" t-as="move">
+                    <!-- Repeat for each quantity of the product -->
+                    <t t-foreach="range(int(move.product_uom_qty))" t-as="qty_index">
+                        <t t-call="web.external_layout">
+                            <div class="page">
+                                <!-- Main Content Section -->
+                                <div class="row" style="font-size: 18px;">
+                                    <!-- Left Column - Product Details -->
+                                    <div class="col-6">
+                                        <h3>รายการสินค้า</h3>
+                                        <table class="table table-bordered" style="background-color: white;">
+                                            <thead>
+                                                <tr style="background-color: white;">
+                                                    <th style="background-color: white;">รูปภาพ</th>
+                                                    <th style="background-color: white;">รายการ</th>
+                                                    <th style="background-color: white;">จำนวน</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="background-color: white;">
+                                                    <td class="align-middle text-center" style="background-color: white;">
+                                                        <img t-if="move.product_id.image_128" t-att-src="image_data_uri(move.product_id.image_128)" style="max-width: 200px; height: auto; border: 1px solid #ddd; padding: 5px;"/>
+                                                    </td>
+                                                    <td style="background-color: white; color: #000;">
+                                                        <span t-field="move.product_id" style="color: #000;"/>
+                                                        <t t-if="move.product_id.default_code">
+                                                            <br/>
+                                                            <span class="text-muted" style="color: #666;">[<t t-esc="move.product_id.default_code"/>]</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="background-color: white; color: #000;">
+                                                        <span>1</span>
+                                                        <span t-field="move.product_uom.name" style="color: #000;"/>
                                                         <br/>
-                                                        <span class="text-muted" style="color: #666;">[<t t-esc="move.product_id.default_code"/>]</span>
-                                                    </t>
-                                                </td>
-                                                <td style="background-color: white; color: #000;">
-                                                    <span t-field="move.product_uom_qty" style="color: #000;"/>
-                                                    <span t-field="move.product_uom.name" style="color: #000;"/>
-                                                </td>
-                                            </tr>
-                                        </t>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- Right Column - Delivery Address -->
-                            <div class="col-6">
-                                <h3 style="font-size: 32px; margin-bottom: 15px;">ที่อยู่ผู้รับ</h3>
-                                <div class="border p-4" style="min-height: 250px;">
-                                    <div style="font-size: 18px; line-height: 1.8;">
-                                        <strong style="font-size: 20px;">ชื่อลูกค้า : </strong>
-                                        <span t-field="o.partner_id.name" style="font-size: 20px;"/>
-                                        <br/>
-                                        <strong style="font-size: 20px;">ที่อยู่ : </strong>
-                                        <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}' style="font-size: 20px; margin: 10px 0;"/>
-                                        <strong style="font-size: 20px;">เบอร์โทร : </strong>
-                                        <span t-field="o.partner_id.phone" style="font-size: 20px;"/>
-                                        <br/>
+                                                        <small class="text-muted">(ชิ้นที่ <t t-esc="qty_index + 1"/> จาก <t t-esc="int(move.product_uom_qty)"/>)</small>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
 
-                                    <!--EXPLAIN: Barcodes Section -->
-                                    <div class="mt-4">
-                                        <!-- Delivery Number Barcode -->
-                                        <div class="text-center mb-3">
-                                            <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
-                                            <strong style="font-size: 16px;">เลขที่ใบส่งของ : <span t-field="o.name"/></strong>
-                                            <br/>
-                                            <strong style="font-size: 16px;">ขนส่ง : <span t-field="o.picking_type_id.name"/></strong>
-                                        </div>
-                                        
-                                        <!-- Sale Order Reference Barcode -->
-                                        <div class="text-center" t-if="o.sale_id">
-                                            <div t-field="o.sale_id.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
-                                            <strong style="font-size: 16px;">เลขที่ใบขาย : <span t-field="o.sale_id.name"/></strong>
-                                            <br/>
-                                            <strong style="font-size: 16px;">ผู้ขาย : <span t-field="o.sale_id.user_id.name"/> (<span t-field="o.sale_id.user_id.work_phone"/>)</strong>
+                                    <!-- Right Column - Delivery Address -->
+                                    <div class="col-6">
+                                        <h3 style="font-size: 32px; margin-bottom: 15px;">ที่อยู่ผู้รับ</h3>
+                                        <div class="border p-4" style="min-height: 250px;">
+                                            <div style="font-size: 18px; line-height: 1.8;">
+                                                <strong style="font-size: 20px;">ชื่อลูกค้า : </strong>
+                                                <span t-field="o.partner_id.name" style="font-size: 20px;"/>
+                                                <br/>
+                                                <strong style="font-size: 20px;">ที่อยู่ : </strong>
+                                                <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}' style="font-size: 20px; margin: 10px 0;"/>
+                                                <strong style="font-size: 20px;">เบอร์โทร : </strong>
+                                                <span t-field="o.partner_id.phone" style="font-size: 20px;"/>
+                                                <br/>
+                                            </div>
+
+                                            <!--EXPLAIN: Barcodes Section -->
+                                            <div class="mt-4">
+                                                <!-- Delivery Number Barcode -->
+                                                <div class="text-center mb-3">
+                                                    <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
+                                                    <strong style="font-size: 16px;">เลขที่ใบส่งของ : <span t-field="o.name"/></strong>
+                                                    <br/>
+                                                    <strong style="font-size: 16px;">ขนส่ง : <span t-field="o.picking_type_id.name"/></strong>
+                                                </div>
+                                                
+                                                <!-- Sale Order Reference Barcode -->
+                                                <div class="text-center" t-if="o.sale_id">
+                                                    <div t-field="o.sale_id.name" t-options="{'widget': 'barcode', 'width': 350, 'height': 50}" class="mt-2"/>
+                                                    <strong style="font-size: 16px;">เลขที่ใบขาย : <span t-field="o.sale_id.name"/></strong>
+                                                    <br/>
+                                                    <strong style="font-size: 16px;">ผู้ขาย : <span t-field="o.sale_id.user_id.name"/> (<span t-field="o.sale_id.user_id.work_phone"/>)</strong>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </t>
+                    </t>
                 </t>
             </t>
         </t>
