@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    View for adding COD Amount field
+    <record id="view_order_form_inherit_cod" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.cod</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add COD Amount field after Payment Terms -->
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="show_cod_field" invisible="1"/>
+                <field name="cod_amount" 
+                       widget="monetary"
+                       force_save="1"
+                       invisible="not show_cod_field"/>
+            </xpath>
+        </field>
+    </record>
+</odoo> 

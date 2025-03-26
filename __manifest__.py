@@ -11,11 +11,12 @@
     """,
     'author': 'Need Shopping',
     'website': 'https://www.needshopping.co',
-    'depends': ['stock', 'delivery'],
+    'depends': ['stock', 'delivery', 'sale'],
     'data': [
         'security/ir.model.access.csv',
         'views/delivery_label_view.xml',
         'views/print_confirm_wizard_view.xml',
+        'views/sale_order_views.xml',
         'reports/delivery_label_report.xml',
     ],
     'installable': True,

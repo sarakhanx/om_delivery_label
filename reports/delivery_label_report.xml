@@ -289,7 +289,7 @@
                         </div>
 
                         <!--EXPLAIN: COD Information -->
-                        <t t-if="o.sale_id and o.sale_id.invoice_ids and abs(o.sale_id.invoice_ids.amount_residual_signed) &gt; 0.009">
+                        <t t-if="o.sale_id and o.sale_id.cod_amount > 0">
                             <div class="row mt-4" style="page-break-inside: avoid;">
                                 <div class="col-12">
                                     <div class="card" style="page-break-inside: avoid;">
@@ -299,7 +299,7 @@
                                         <div class="card-body">
                                             <h5 class="text-right">
                                                 <strong>ยอดเรียกเก็บ : </strong>
-                                                <span t-field="o.sale_id.invoice_ids.amount_residual_signed" t-options='{"widget": "monetary", "display_currency": o.sale_id.currency_id}'/>
+                                                <span t-field="o.sale_id.cod_amount" t-options='{"widget": "monetary", "display_currency": o.sale_id.currency_id}'/>
                                             </h5>
                                         </div>
                                     </div>
